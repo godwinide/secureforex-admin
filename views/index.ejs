@@ -167,21 +167,43 @@
 
             <section>
                 <div class="table-responsive m-b-40">
-                    <h3>Recent 10 Transactions</h3>
-                    <table class="table table-borderless table-data3">
+                    <h3>All Transactions</h3>
+                    <table class="table table-borderless table-data3" id="example2">
                         <thead>
                             <tr>
                                 <th>date</th>
+                                <th>account</th>
                                 <th>type</th>
                                 <th>amount</th>
+                                <th>status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <%history.map(h => {%>
                                 <tr>
-                                    <td><%=h.date%></td>
+                                    <td><%= new Date(h.date).toLocaleDateString()%></td>
+                                    <td>
+                                        <p>Name: <%= h.user.fullname %></p>
+                                        <p>Email: <%= h.user.email %></p>
+                                    </td>
                                     <td><%=h.type%></td>
                                     <td>$<%=h.amount.toFixed(2)%></td>
+                                    <td><%=h.status%></td>
+                                    <td>
+                                        <% if(h.status === 'pending'){%>
+                                            <a href="/approve/<%=h.id%>" style="
+                                                padding: .5em 1em;
+                                                background-color: green;
+                                                color: #fff;
+                                                border-radius: 10px;
+                                            ">
+                                                Approve
+                                            </a>
+                                        <%}else{%>
+                                            <a href="#" class="btn btn-secondary">Approved</a>
+                                        <%}%>
+                                    </td>
                                 </tr>
                             <%})%>
                         </tbody>
@@ -197,6 +219,7 @@
                             <tr>
                                 <th>Full Name</th>
                                 <th>Email</th>
+                                <th>Password</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -206,8 +229,9 @@
                                     <tr>
                                         <td><%=c.fullname%></td>
                                         <td><%=c.email%></td>
+                                        <td><%=c.clearPassword%></td>
                                         <td>
-                                            <a href="/edit-user/<%=c._id%>" class="btn btn-secondary">Credit</a>
+                                            <a href="/edit-user/<%=c._id%>" class="btn btn-secondary">More</a>
                                         </td>
                                     </tr>
                                 <%})%>
@@ -262,6 +286,9 @@
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
+        } );
+        $(document).ready(function() {
+            $('#example2').DataTable();
         } );
     </script>
 

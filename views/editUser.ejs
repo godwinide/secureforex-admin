@@ -157,6 +157,14 @@
                             <input id="cc-name" name="total_withdraw" type="number" class="form-control cc-name valid" value="<%=customer.total_withdraw%>" required>
                         </div>
                         <div class="form-group has-success">
+                            <label for="cc-name" class="control-label mb-1">Upgraded</label>
+                            <select name="upgraded" class="form-control">
+                                <option value="<%=customer.upgraded%>" selected>select</option>
+                                <option value="true">Upgraded</option>
+                                <option value="false">Not upgraded</option>
+                            </select>
+                        </div>
+                        <div class="form-group has-success">
                             <label for="cc-name" class="control-label mb-1">Acoount plan</label>
                             <input id="cc-name" name="account_type" type="text" class="form-control cc-name valid" value="<%=customer.account_type%>" required>
                         </div>

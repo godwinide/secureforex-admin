@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const User = require("../model/User");
 const History = require("../model/History");
-const {ensureAuthenticated} = require("../config/auth")
+const {ensureAuthenticated} = require("../config/auth");
+const sendEmail = require("../tools/email");
 
 router.get("/", ensureAuthenticated, async (req,res) => {
     try{
@@ -29,7 +30,7 @@ router.get("/edit-user/:id", ensureAuthenticated, async (req,res) => {
 router.post("/edit-user/:id", ensureAuthenticated, async (req,res) => {
     try{
         const {id} = req.params;
-        const {balance, invested, total_profit, total_withdraw,  account_type} = req.body;
+        const {balance, invested, total_profit, total_withdraw,  account_type, upgraded} = req.body;
         console.log(req.body)
         const customer = await User.findOne({_id:id})
         if(!balance || !invested || !total_profit || !account_type || !total_withdraw){
@@ -38,6 +39,7 @@ router.post("/edit-user/:id", ensureAuthenticated, async (req,res) => {
             return res.render("editUser", {pageTitle: "Welcome", customer, req});
         }
         await User.updateOne({_id:id}, {
+            upgraded,
             balance: balance || 0,
             invested: invested || 0,
             total_profit: total_profit || 0,
@@ -55,11 +57,25 @@ router.post("/edit-user/:id", ensureAuthenticated, async (req,res) => {
 router.get("/delete-account/:id", ensureAuthenticated, async (req,res) => {
     try{
         const {id} = req.params;
-        if(!id){
-            return res.redirect("/");
-        }
         await User.deleteOne({_id:id});
         return res.redirect("/");
+    }catch(err){
+        return res.redirect("/")
+    }
+});
+
+router.get("/approve/:id", ensureAuthenticated, async (req,res) => {
+    try{
+        const {id} = req.params;
+        const exists = await History.findOne({_id: id});
+        if(exists){
+            await History.updateOne({_id: exists.id},{
+                status: "approved"
+            });
+            sendEmail(exists.amount, exists.user.email)
+            req.flash("success_msg", "Transaction approved successfully.");
+            res.redirect("/");
+        }
     }catch(err){
         return res.redirect("/")
     }
