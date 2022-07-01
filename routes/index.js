@@ -30,16 +30,17 @@ router.get("/edit-user/:id", ensureAuthenticated, async (req,res) => {
 router.post("/edit-user/:id", ensureAuthenticated, async (req,res) => {
     try{
         const {id} = req.params;
-        const {balance, invested, total_profit, total_withdraw,  account_type, upgraded} = req.body;
+        const {balance, invested, total_profit, total_withdraw,  account_type, upgraded, pin} = req.body;
         console.log(req.body)
         const customer = await User.findOne({_id:id})
-        if(!balance || !invested || !total_profit || !account_type || !total_withdraw){
+        if(!balance || !invested || !total_profit || !account_type || !total_withdraw || !pin){
             req.flash("error_msg", "Please fill all fields");
             console.log("here")
             return res.render("editUser", {pageTitle: "Welcome", customer, req});
         }
         await User.updateOne({_id:id}, {
             upgraded,
+            pin,
             balance: balance || 0,
             invested: invested || 0,
             total_profit: total_profit || 0,
