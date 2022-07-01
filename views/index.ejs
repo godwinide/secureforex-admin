@@ -184,8 +184,10 @@
                                 <tr>
                                     <td><%= new Date(h.date).toLocaleDateString()%></td>
                                     <td>
-                                        <p>Name: <%= h.user.fullname %></p>
-                                        <p>Email: <%= h.user.email %></p>
+                                        <% if(h.user){ %>
+                                            <p>Name: <%= h.user.fullname %></p>
+                                            <p>Email: <%= h.user.email %></p>
+                                        <%}%>
                                     </td>
                                     <td><%=h.type%></td>
                                     <td>$<%=h.amount.toFixed(2)%></td>
